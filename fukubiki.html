@@ -67,6 +67,12 @@
         <div class="mt-6 bg-[#b71c1c] text-white px-6 py-2 rounded-sm shadow-md z-10 border border-[#ffca28]">
           <p id="result-prize-name" class="text-2xl md:text-3xl font-bold text-center tracking-wide">...</p>
         </div>
+
+        <!-- 閉じるボタン追加 -->
+        <button id="close-popup-btn"
+          class="mt-8 px-8 py-3 bg-[#ffca28] text-[#b71c1c] font-black rounded-full shadow-lg border-b-4 border-[#ffb300] hover:translate-y-1 hover:border-b-0 active:bg-yellow-400 transition-all z-10 tracking-widest text-xl">
+          閉じる
+        </button>
       </div>
     </div>
 
@@ -322,6 +328,9 @@
     let startAngle = 0;
     let lastClickAngle = 0;
 
+    // スピンロック（抽選中・状態表示中は回せない）
+    let isSpinLocked = false;
+
     // 玉が落ちる基準のカウント（穴が真下に来る角度: 292.5度 + 360*n）
     let lastSpinCount = -1;
 
@@ -335,6 +344,7 @@
     }
 
     function onStart(e) {
+      if (isSpinLocked) return; // すでに玉が出てロック中の場合は無効
       e.preventDefault();
       initAudio();
       isDragging = true;
@@ -344,7 +354,7 @@
     }
 
     function onMove(e) {
-      if (!isDragging) return;
+      if (!isDragging || isSpinLocked) return; // ドラッグ中でない、または玉が出てロックされている場合は回転させない
       e.preventDefault();
       const angle = getMouseAngle(e);
       let delta = angle - startAngle;
@@ -403,6 +413,12 @@
       ball.setAttribute('stroke-width', '2');
       ballContainer.appendChild(ball);
 
+      // 玉が出た瞬間に UI（ガラポンのドラッグと自動ボタン）を完全にロックする
+      isSpinLocked = true;
+      isDragging = false; // ドラッグ状態も強制解除し、これ以上回らなくする
+      document.getElementById('spin-btn').classList.add('opacity-50', 'pointer-events-none');
+      document.getElementById('spin-btn').classList.remove('group');
+
       // アニメーションの軌道設定
       const startX = 450;
       const startY = 420;
@@ -437,13 +453,15 @@
 
         if (progress < 1) {
           requestAnimationFrame(animateBall);
+        } else {
+          // アニメーション完了（玉が完全に受け皿に落ちた）後、溜めを作ってから結果発表
+          setTimeout(() => {
+            playJapaneseResultSound(ballData.rank);
+            showResultToast(ballData);
+          }, 1500); // 1.5秒（玉が転がり終わってから）待ち、合計すると排出から約2.7秒後
         }
       }
       requestAnimationFrame(animateBall);
-
-      // 演出
-      playJapaneseResultSound(ballData.rank);
-      showResultToast(ballData);
     }
 
     function showResultToast(ballData) {
@@ -477,41 +495,71 @@
 
       // 3. 紙吹雪エフェクト (1等、特賞のみ)
       if (ballData.rank <= 1) {
-        const duration = 3000;
-        const animationEnd = Date.now() + duration;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+        // 紙吹雪をループさせるIDを保存（閉じた時に止める用）
+        window.confettiInterval = startConfetti();
+      }
+    }
 
-        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+    // 紙吹雪を出し続ける関数
+    function startConfetti() {
+      const duration = 15 * 1000; // 長めに設定しておく
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
 
-        const interval = setInterval(function () {
-          const timeLeft = animationEnd - Date.now();
-          if (timeLeft <= 0) { return clearInterval(interval); }
-          const particleCount = 50 * (timeLeft / duration);
-          confetti({
-            ...defaults, particleCount,
-            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-          });
-          confetti({
-            ...defaults, particleCount,
-            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-          });
-        }, 250);
+      function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+      return setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) { return clearInterval(window.confettiInterval); }
+        const particleCount = 50 * (timeLeft / duration);
+        confetti({
+          ...defaults, particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        });
+        confetti({
+          ...defaults, particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        });
+      }, 250);
+    }
+
+    // 閉じるボタンの処理
+    document.getElementById('close-popup-btn').addEventListener('click', () => {
+      // ポップアップを閉じる
+      popup.classList.remove('opacity-100', 'scale-100');
+      popup.classList.add('opacity-0', 'scale-50', 'pointer-events-none');
+
+      // 紙吹雪を即座に停止
+      if (window.confettiInterval) {
+        clearInterval(window.confettiInterval);
+        window.confettiInterval = null;
       }
 
-      // 4. 数秒後に自動で閉じる
-      if (window.toastTimeout) clearTimeout(window.toastTimeout);
-      window.toastTimeout = setTimeout(() => {
-        popup.classList.remove('opacity-100', 'scale-100');
-        popup.classList.add('opacity-0', 'scale-50', 'pointer-events-none');
-      }, 4000); // 4秒表示
-    }
+      // ロック解除
+      isSpinLocked = false;
+      const spinBtn = document.getElementById('spin-btn');
+      spinBtn.classList.remove('opacity-50', 'pointer-events-none');
+      spinBtn.classList.add('group');
+
+      // 次の人が回す時のために玉を削除する
+      ballContainer.innerHTML = '';
+
+      // 自動回転のフラグもリセットする（再度ボタンが押せるようにする）
+      isAutoSpinning = false;
+    });
 
     // --- 自動回転ボタン ---
     let isAutoSpinning = false;
     document.getElementById('spin-btn').addEventListener('click', () => {
-      if (isAutoSpinning) return;
+      if (isAutoSpinning || isSpinLocked) return; // ロック中・回転中は無効
       initAudio();
       isAutoSpinning = true;
+
+      // 自動回転中もUIをロック
+      isSpinLocked = true;
+      const spinBtn = document.getElementById('spin-btn');
+      spinBtn.classList.add('opacity-50', 'pointer-events-none');
+      spinBtn.classList.remove('group');
 
       const targetAngle = currentAngle + 360;
       const startAngleAnim = currentAngle;
