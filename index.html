@@ -50,22 +50,25 @@
 
     <!-- 結果表示ポップアップ -->
     <div id="result-popup"
-      class="absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 scale-50 z-30 bg-black/60 backdrop-blur-sm">
+      class="absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 scale-50 z-[30] bg-black/60 backdrop-blur-sm">
       <div
-        class="bg-[#fffdfa] p-8 md:p-12 rounded-lg shadow-2xl flex flex-col items-center justify-center japanese-border max-w-[90%] md:max-w-md relative overflow-hidden">
+        class="bg-[#fffdfa] p-4 md:p-8 rounded-lg shadow-2xl flex flex-col items-center justify-center japanese-border max-w-[95%] md:max-w-md relative overflow-hidden"
+        style="min-height: 480px;">
         <!-- 和柄の透かし背景 -->
         <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
           style="background-image: radial-gradient(#b71c1c 2px, transparent 2px); background-size: 20px 20px;"></div>
 
-        <h2 id="result-text" class="text-5xl md:text-7xl font-extrabold mb-6 tracking-widest z-10"
+        <h2 id="result-text" class="text-4xl md:text-6xl font-extrabold mb-4 tracking-widest z-10 flex-shrink-0"
           style="text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;">当たり！</h2>
-        <div
-          class="relative w-56 h-56 md:w-72 md:h-72 rounded-sm overflow-hidden shadow-inner bg-gray-100 flex items-center justify-center border-4 border-[#e0e0e0] z-10">
-          <img id="result-image" src="" alt="景品画像" class="w-full h-full object-cover hidden">
-          <div id="result-no-image" class="text-gray-400 font-bold hidden">画像なし</div>
+        
+        <div class="z-10 flex-shrink-0 bg-gray-200 border-4 border-[#e0e0e0] rounded-sm overflow-hidden shadow-inner flex items-center justify-center"
+             style="width: 200px; height: 200px; min-height: 200px; min-width: 200px;">
+          <img id="result-image" src="" alt="景品画像" style="width: 200px; height: 200px; object-fit: cover; display: none;">
+          <div id="result-no-image" class="text-gray-400 font-bold" style="display: none;">画像なし</div>
         </div>
-        <div class="mt-6 bg-[#b71c1c] text-white px-6 py-2 rounded-sm shadow-md z-10 border border-[#ffca28]">
-          <p id="result-prize-name" class="text-2xl md:text-3xl font-bold text-center tracking-wide">...</p>
+
+        <div class="mt-4 bg-[#b71c1c] text-white px-4 py-2 rounded-sm shadow-md z-10 border border-[#ffca28] flex-shrink-0">
+          <p id="result-prize-name" class="text-xl md:text-2xl font-bold text-center tracking-wide">...</p>
         </div>
 
         <!-- 閉じるボタン追加 -->
@@ -90,22 +93,9 @@
           <stop offset="0%" stop-color="#FFFFFF" />
           <stop offset="100%" stop-color="#E0E0E0" />
         </radialGradient>
-        <radialGradient id="ballGrad-blue" cx="30%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#64B5F6" />
-          <stop offset="100%" stop-color="#1976D2" />
-        </radialGradient>
-        <radialGradient id="ballGrad-yellow" cx="30%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#FFF59D" />
-          <stop offset="100%" stop-color="#FBC02D" />
-        </radialGradient>
         <radialGradient id="ballGrad-red" cx="30%" cy="30%" r="70%">
           <stop offset="0%" stop-color="#EF5350" />
           <stop offset="100%" stop-color="#C62828" />
-        </radialGradient>
-        <radialGradient id="ballGrad-gold" cx="30%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#FFF59D" />
-          <stop offset="50%" stop-color="#FFD54F" />
-          <stop offset="100%" stop-color="#F57F17" />
         </radialGradient>
       </defs>
 
@@ -266,40 +256,28 @@
       });
     }
 
-    // 和風の抽選結果サウンド（等級に応じて長さを変える）
+    // 和風の抽選結果サウンド（当たり/ハズレ）
     function playJapaneseResultSound(rank) {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
 
       if (rank === 0) {
-        // 特賞: ド・ドン・ドン！＋カーン！カーン！
+        // 大当たり！: ド・ドン・ドン！＋カーン！カーン！
         playTaiko(now);
         playTaiko(now + 0.2);
         playTaiko(now + 0.4, true);
         playKane(now + 0.4);
         playKane(now + 0.8);
-      } else if (rank === 1) {
-        // 1等: ド・ドン！＋カーン！
-        playTaiko(now);
-        playTaiko(now + 0.25, true);
-        playKane(now + 0.25);
-      } else if (rank === 2 || rank === 3) {
-        // 2等・3等: ドドン！
-        playTaiko(now);
-        playTaiko(now + 0.2);
       } else {
-        // 参加賞: ドン（単発）
+        // ハズレ: ドン（単発）
         playTaiko(now);
       }
     }
 
     // --- 抽選ロジック ---
     const balls = [
-      { fill: 'url(#ballGrad-white)', stroke: '#BDBDBD', prob: 0.70, text: '参加賞', textColor: '#757575', rank: 4, prizeName: '来店ぽいんと10pt', image: 'https://placehold.co/400x400/eeeeee/999999?text=10pt' },
-      { fill: 'url(#ballGrad-blue)', stroke: '#1976D2', prob: 0.15, text: '3等', textColor: '#2196F3', rank: 3, prizeName: '和装小物500円引券', image: 'https://placehold.co/400x400/bbdefb/1976d2?text=Coupon' },
-      { fill: 'url(#ballGrad-yellow)', stroke: '#FBC02D', prob: 0.08, text: '2等', textColor: '#FFCA28', rank: 2, prizeName: '髪飾りプレゼント', image: 'https://placehold.co/400x400/fff9c4/fbc02d?text=Gift' },
-      { fill: 'url(#ballGrad-red)', stroke: '#D32F2F', prob: 0.06, text: '1等！', textColor: '#F44336', rank: 1, prizeName: '浴衣1着プレゼント', image: 'https://placehold.co/400x400/ffcdd2/d32f2f?text=Yukata' },
-      { fill: 'url(#ballGrad-gold)', stroke: '#FFA000', prob: 0.01, text: '特賞！！', textColor: '#FFD700', rank: 0, prizeName: '振袖レンタル20%OFF', image: 'https://placehold.co/400x400/ffecb3/ffa000?text=20%25OFF' }
+      { fill: 'url(#ballGrad-white)', stroke: '#BDBDBD', prob: 0.80, text: '残念…', textColor: '#999999', rank: 1, prizeName: 'またのお越しをお待ちしております', image: 'images/lose.jpg' },
+      { fill: 'url(#ballGrad-red)', stroke: '#D32F2F', prob: 0.20, text: '🎊 大当たり！', textColor: '#D32F2F', rank: 0, prizeName: '1万円割引クーポン（3万円以上のお買い上げで使えます）', image: 'images/win.jpg' }
     ];
 
     function getRandomBall() {
@@ -481,20 +459,28 @@
       prizeNameContainer.style.backgroundColor = ballData.textColor;
 
       if (ballData.image) {
+        resultImage.onload = function () {
+          resultImage.style.display = 'block';
+          resultNoImage.style.display = 'none';
+        };
+        resultImage.onerror = function () {
+          resultImage.style.display = 'none';
+          resultNoImage.style.display = 'block';
+        };
+        // 読み込み開始前にNo Imageを隠し、画像枠を確保
+        resultNoImage.style.display = 'none';
         resultImage.src = ballData.image;
-        resultImage.classList.remove('hidden');
-        resultNoImage.classList.add('hidden');
       } else {
-        resultImage.classList.add('hidden');
-        resultNoImage.classList.remove('hidden');
+        resultImage.style.display = 'none';
+        resultNoImage.style.display = 'block';
       }
 
       // 2. ポップアップ表示アニメーション
       popup.classList.remove('opacity-0', 'scale-50', 'pointer-events-none');
       popup.classList.add('opacity-100', 'scale-100');
 
-      // 3. 紙吹雪エフェクト (1等、特賞のみ)
-      if (ballData.rank <= 1) {
+      // 3. 紙吹雪エフェクト (大当たりのみ)
+      if (ballData.rank === 0) {
         // 紙吹雪をループさせるIDを保存（閉じた時に止める用）
         window.confettiInterval = startConfetti();
       }
