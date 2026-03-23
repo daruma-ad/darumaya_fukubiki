@@ -50,6 +50,7 @@
 
 
 
+
     <!-- SVG ガラポン -->
     <svg viewBox="0 0 800 600" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
@@ -170,11 +171,19 @@
         <p id="result-prize-name" class="text-xl md:text-2xl font-bold text-center tracking-wide">...</p>
       </div>
 
-      <!-- 閉じるボタン追加 -->
-      <button id="close-popup-btn"
-        class="mt-8 px-8 py-3 bg-[#ffca28] text-[#b71c1c] font-black rounded-full shadow-lg border-b-4 border-[#ffb300] hover:translate-y-1 hover:border-b-0 active:bg-yellow-400 transition-all z-10 tracking-widest text-xl flex-shrink-0">
-        閉じる
-      </button>
+      <!-- アクションボタンエリア -->
+      <div class="mt-8 flex flex-col items-center gap-4 w-full z-10">
+        <!-- 来店予約ボタン（初期は隠す） -->
+        <button id="reserve-popup-btn"
+          class="hidden w-full px-8 py-4 bg-[#b71c1c] text-white font-black rounded-full shadow-lg border-2 border-[#ffca28] hover:translate-y-1 hover:shadow-md active:bg-[#8e1515] transition-all tracking-widest text-xl text-center">
+          この特典で来店予約する ➡
+        </button>
+        
+        <button id="close-popup-btn"
+          class="px-6 py-2 bg-gray-100 text-gray-600 font-bold rounded-full shadow border-b-2 border-gray-300 hover:translate-y-0.5 active:bg-gray-200 transition-all text-sm">
+          閉じる
+        </button>
+      </div>
     </div>
   </div>
 
@@ -303,6 +312,7 @@
     const resultImage = document.getElementById('result-image');
     const resultNoImage = document.getElementById('result-no-image');
     const resultPrizeName = document.getElementById('result-prize-name');
+    const reservePopupBtn = document.getElementById('reserve-popup-btn'); // 予約ボタン追加
 
     let isDragging = false;
     let currentAngle = 0;
@@ -478,11 +488,26 @@
         resultNoImage.style.display = 'block';
       }
 
-      // 2. ポップアップ表示アニメーション
+      // 2. 来店予約ボタンの表示制御とデータ保存
+      if (ballData.rank === 0) { // 大当たりの場合のみ予約を促す
+        reservePopupBtn.classList.remove('hidden');
+        reservePopupBtn.onclick = () => {
+          // sessionStorageにセット
+          sessionStorage.setItem('prizeData', JSON.stringify({
+            prizeName: ballData.prizeName,
+            rank: ballData.rank
+          }));
+          window.location.href = 'reservation.html';
+        };
+      } else {
+        reservePopupBtn.classList.add('hidden');
+      }
+
+      // 3. ポップアップ表示アニメーション
       popup.classList.remove('opacity-0', 'scale-50', 'pointer-events-none');
       popup.classList.add('opacity-100', 'scale-100');
 
-      // 3. 紙吹雪エフェクト (大当たりのみ)
+      // 4. 紙吹雪エフェクト (大当たりのみ)
       if (ballData.rank === 0) {
         // 紙吹雪をループさせるIDを保存（閉じた時に止める用）
         window.confettiInterval = startConfetti();

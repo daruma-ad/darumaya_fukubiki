@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>来店予約 - だるまや大抽選会</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700;800&display=swap');
+
+    body {
+      font-family: 'Shippori Mincho', serif;
+      background-color: #fdfaf6;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' fill='%23fdfaf6'/%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    }
+
+    .japanese-border {
+      border: 8px solid #b71c1c;
+      box-shadow: 0 0 0 4px #ffca28, 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-gray-800">
+
+  <div class="text-center mb-6 z-10">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-[#b71c1c] mb-2 tracking-widest"
+      style="text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 2px 2px 0 #ffca28;">
+      ご来店予約フォーム</h1>
+    <p class="text-sm md:text-base font-bold text-[#b71c1c]">特典をご利用になるための予約を承ります</p>
+  </div>
+
+  <div class="w-full max-w-md bg-[#fffdfa] p-6 rounded-xl japanese-border relative overflow-hidden">
+    <!-- 和柄の透かし背景 -->
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: radial-gradient(#b71c1c 2px, transparent 2px); background-size: 20px 20px;"></div>
+
+    <!-- 景品確認エリア -->
+    <div class="mb-6 bg-[#b71c1c]/10 border border-[#b71c1c]/30 p-4 rounded-sm">
+      <p class="text-xs font-bold text-[#b71c1c] mb-1">🎁 獲得された特典</p>
+      <div id="prize-name" class="text-xl md:text-2xl font-black text-[#b71c1c] tracking-wide">
+        読み込み中...
+      </div>
+    </div>
+
+    <form id="reservation-form" class="space-y-4 relative z-10">
+      <!-- 隠しフィールド：景品名 -->
+      <input type="hidden" id="hidden-prize" name="prize" value="">
+
+      <div>
+        <label for="name" class="block text-sm font-bold text-[#b71c1c] mb-1">● お名前</label>
+        <input type="text" id="name" required placeholder="だるま 太郎"
+          class="w-full px-3 py-2 border-2 border-gray-300 rounded-sm focus:outline-none focus:border-[#b71c1c] font-sans">
+      </div>
+
+      <div>
+        <label for="contact" class="block text-sm font-bold text-[#b71c1c] mb-1">● ご連絡先（電話またはメール）</label>
+        <input type="text" id="contact" required placeholder="090-1234-5678"
+          class="w-full px-3 py-2 border-2 border-gray-300 rounded-sm focus:outline-none focus:border-[#b71c1c] font-sans">
+      </div>
+
+      <div>
+        <label for="datetime" class="block text-sm font-bold text-[#b71c1c] mb-1">● ご来店希望日時</label>
+        <input type="datetime-local" id="datetime" required
+          class="w-full px-3 py-2 border-2 border-gray-300 rounded-sm focus:outline-none focus:border-[#b71c1c] font-sans">
+      </div>
+
+      <div class="pt-4">
+        <button type="submit" id="submit-btn"
+          class="w-full bg-[#ffca28] text-[#b71c1c] font-black py-3 rounded-full shadow-lg border-b-4 border-[#ffb300] hover:translate-y-1 hover:border-b-0 active:bg-yellow-400 transition-all tracking-widest text-xl">
+          予約を確定する
+        </button>
+      </div>
+    </form>
+
+    <!-- 完了メッセージ (初期は非表示) -->
+    <div id="success-msg" class="hidden flex-col items-center justify-center p-6 text-center">
+      <div class="text-5xl mb-4">🙏</div>
+      <h2 class="text-2xl font-extrabold text-[#b71c1c] mb-2">ご予約を承りました</h2>
+      <p class="text-sm text-gray-600">当日、スタッフへ画面をご提示ください。ご来店を心よりお待ちしております。</p>
+      <a href="index.html" class="mt-6 text-sm text-[#b71c1c] underline hover:text-[#ffca28]">ガラポンに戻る</a>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="index.html" class="text-sm font-bold text-gray-500 hover:text-[#b71c1c] underline">🔙 抽選画面に戻る</a>
+  </div>
+
+  <script>
+    // 1. sessionStorage からデータの取得
+    const prizeData = sessionStorage.getItem('prizeData');
+    const prizeDisplay = document.getElementById('prize-name');
+    const hiddenPrize = document.getElementById('hidden-prize');
+
+    if (prizeData) {
+      try {
+        const data = JSON.parse(prizeData);
+        prizeDisplay.textContent = data.prizeName;
+        hiddenPrize.value = data.prizeName;
+        
+        // 大当たりの場合は少し豪華に見せる
+        if (data.rank === 0) {
+          prizeDisplay.innerHTML = `🌟 <span class="text-[#ffca28]" style="text-shadow: 1px 1px 0 #b71c1c;">${data.prizeName}</span>`;
+        }
+      } catch (e) {
+        prizeDisplay.textContent = "読み込みエラー";
+      }
+    } else {
+      prizeDisplay.textContent = "特典情報がありません（一般予約）";
+    }
+
+    // 2. フォーム送信処理 (モック)
+    const form = document.getElementById('reservation-form');
+    const successMsg = document.getElementById('success-msg');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const contact = document.getElementById('contact').value;
+      const datetime = document.getElementById('datetime').value;
+      const prize = hiddenPrize.value || "招待なし";
+
+      // 本来はここでサーバーに送信
+      console.log('--- 予約送信 ---');
+      console.log('お名前:', name);
+      console.log('連絡先:', contact);
+      console.log('日時:', datetime);
+      console.log('景品:', prize);
+
+      // UIの切り替え
+      form.classList.add('hidden');
+      document.querySelector('.bg-[#b71c1c\\/10]').classList.add('hidden');
+      successMsg.classList.remove('hidden');
+
+      // 使用したクーポンを削除
+      sessionStorage.removeItem('prizeData');
+    });
+  </script>
+
+</body>
+
+</html>
