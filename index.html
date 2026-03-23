@@ -48,36 +48,7 @@
   <div
     class="relative w-full max-w-3xl aspect-[4/3] md:aspect-video bg-[#fffdfa] rounded-xl japanese-border select-none overflow-hidden mt-2">
 
-    <!-- 結果表示ポップアップ -->
-    <div id="result-popup"
-      class="absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 scale-50 z-[30] bg-black/60 backdrop-blur-sm">
-      <div
-        class="bg-[#fffdfa] p-4 md:p-8 rounded-lg shadow-2xl flex flex-col items-center justify-center japanese-border max-w-[95%] md:max-w-md relative overflow-hidden"
-        style="min-height: 480px;">
-        <!-- 和柄の透かし背景 -->
-        <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style="background-image: radial-gradient(#b71c1c 2px, transparent 2px); background-size: 20px 20px;"></div>
 
-        <h2 id="result-text" class="text-4xl md:text-6xl font-extrabold mb-4 tracking-widest z-10 flex-shrink-0"
-          style="text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;">当たり！</h2>
-        
-        <div class="z-10 flex-shrink-0 bg-gray-200 border-4 border-[#e0e0e0] rounded-sm overflow-hidden shadow-inner flex items-center justify-center"
-             style="width: 200px; height: 200px; min-height: 200px; min-width: 200px;">
-          <img id="result-image" src="" alt="景品画像" style="width: 200px; height: 200px; object-fit: cover; display: none;">
-          <div id="result-no-image" class="text-gray-400 font-bold" style="display: none;">画像なし</div>
-        </div>
-
-        <div class="mt-4 bg-[#b71c1c] text-white px-4 py-2 rounded-sm shadow-md z-10 border border-[#ffca28] flex-shrink-0">
-          <p id="result-prize-name" class="text-xl md:text-2xl font-bold text-center tracking-wide">...</p>
-        </div>
-
-        <!-- 閉じるボタン追加 -->
-        <button id="close-popup-btn"
-          class="mt-8 px-8 py-3 bg-[#ffca28] text-[#b71c1c] font-black rounded-full shadow-lg border-b-4 border-[#ffb300] hover:translate-y-1 hover:border-b-0 active:bg-yellow-400 transition-all z-10 tracking-widest text-xl">
-          閉じる
-        </button>
-      </div>
-    </div>
 
     <!-- SVG ガラポン -->
     <svg viewBox="0 0 800 600" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
@@ -174,6 +145,38 @@
       <span style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">自動で回す</span>
     </div>
   </button>
+
+
+  <!-- 結果表示ポップアップ（全画面オーバーレイ） -->
+  <div id="result-popup"
+    class="fixed inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 scale-50 z-[50] bg-black/60 backdrop-blur-sm p-4">
+    <div
+      class="bg-[#fffdfa] p-4 md:p-8 rounded-lg shadow-2xl flex flex-col items-center justify-center japanese-border max-w-[95%] md:max-w-md relative overflow-y-auto overflow-x-hidden max-h-[90vh]">
+      <!-- 和柄の透かし背景 -->
+      <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style="background-image: radial-gradient(#b71c1c 2px, transparent 2px); background-size: 20px 20px;"></div>
+
+      <h2 id="result-text" class="text-4xl md:text-6xl font-extrabold mb-4 tracking-widest z-10 flex-shrink-0"
+        style="text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;">当たり！</h2>
+
+      <div
+        class="z-10 flex-shrink-0 bg-gray-200 border-4 border-[#e0e0e0] rounded-sm overflow-hidden shadow-inner flex items-center justify-center"
+        style="width: 200px; height: 200px; min-height: 200px; min-width: 200px;">
+        <img id="result-image" src="" alt="景品画像" style="width: 200px; height: 200px; object-fit: cover; display: none;">
+        <div id="result-no-image" class="text-gray-400 font-bold" style="display: none;">画像なし</div>
+      </div>
+
+      <div class="mt-4 bg-[#b71c1c] text-white px-4 py-2 rounded-sm shadow-md z-10 border border-[#ffca28] flex-shrink-0">
+        <p id="result-prize-name" class="text-xl md:text-2xl font-bold text-center tracking-wide">...</p>
+      </div>
+
+      <!-- 閉じるボタン追加 -->
+      <button id="close-popup-btn"
+        class="mt-8 px-8 py-3 bg-[#ffca28] text-[#b71c1c] font-black rounded-full shadow-lg border-b-4 border-[#ffb300] hover:translate-y-1 hover:border-b-0 active:bg-yellow-400 transition-all z-10 tracking-widest text-xl flex-shrink-0">
+        閉じる
+      </button>
+    </div>
+  </div>
 
   <script>
     // --- 音声関連のセットアップ ---
