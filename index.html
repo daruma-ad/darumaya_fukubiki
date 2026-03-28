@@ -68,17 +68,18 @@
       ハンドルを回して運試し！</p>
   </div>
 
-  <!-- ガラポン本体とエフェクトのコンテナ -->
-  <!-- ... (中略) ... -->
   <div
     class="relative w-full max-w-3xl aspect-[4/3] md:aspect-video bg-[#fffdfa] rounded-xl japanese-border select-none overflow-hidden mt-2">
-    <!-- SVG内容は変更なしのため省略して記載 -->
+    <!-- SVG ガラポン -->
     <svg viewBox="0 0 800 600" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
+        <!-- ドラムのグラデーション -->
         <radialGradient id="drumGrad" cx="35%" cy="35%" r="65%">
           <stop offset="0%" stop-color="#FF5252" />
           <stop offset="100%" stop-color="#B71C1C" />
         </radialGradient>
+
+        <!-- 玉のグラデーション -->
         <radialGradient id="ballGrad-white" cx="30%" cy="30%" r="70%">
           <stop offset="0%" stop-color="#FFFFFF" />
           <stop offset="100%" stop-color="#E0E0E0" />
@@ -88,18 +89,31 @@
           <stop offset="100%" stop-color="#C62828" />
         </radialGradient>
       </defs>
+
+      <!-- 土台 -->
       <rect x="150" y="480" width="500" height="40" rx="10" fill="#795548" />
       <rect x="150" y="520" width="500" height="10" rx="5" fill="#4E342E" />
+
+      <!-- 樋 (玉が転がる傾斜) -->
       <polygon points="450,420 450,450 200,480 200,450" fill="#90A4AE" />
       <polygon points="450,440 450,455 200,485 200,470" fill="#78909C" />
+
+      <!-- 受け皿 -->
       <rect x="180" y="450" width="100" height="40" rx="10" fill="#CFD8DC" />
       <rect x="190" y="460" width="80" height="20" rx="5" fill="#B0BEC5" />
+
+      <!-- 奥のスタンド -->
       <path d="M 430,280 L 370,480 L 410,480 L 450,280 Z" fill="#5D4037" />
       <path d="M 470,280 L 530,480 L 490,480 L 450,280 Z" fill="#5D4037" />
+
+      <!-- ================= 回転するドラム ================= -->
       <g id="drum-group" transform="translate(450,280)">
+        <!-- 八角形ボディ -->
         <polygon
           points="166.3,68.9 68.9,166.3 -68.9,166.3 -166.3,68.9 -166.3,-68.9 -68.9,-166.3 68.9,-166.3 166.3,-68.9"
           fill="url(#drumGrad)" stroke="#FFCA28" stroke-width="12" stroke-linejoin="round" />
+
+        <!-- 金色の補強線 -->
         <line x1="0" y1="0" x2="166.3" y2="68.9" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
         <line x1="0" y1="0" x2="68.9" y2="166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
         <line x1="0" y1="0" x2="-68.9" y2="166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
@@ -108,25 +122,39 @@
         <line x1="0" y1="0" x2="-68.9" y2="-166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
         <line x1="0" y1="0" x2="68.9" y2="-166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
         <line x1="0" y1="0" x2="166.3" y2="-68.9" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
+
+        <!-- 玉の出口穴 -->
         <circle cx="-130" cy="54" r="16" fill="#212121" />
         <circle cx="-130" cy="54" r="16" fill="none" stroke="#FFCA28" stroke-width="4" />
       </g>
+
+      <!-- 手前のスタンド -->
       <path d="M 420,280 L 340,490 L 390,490 L 450,280 Z" fill="#8D6E63" />
       <path d="M 480,280 L 560,490 L 510,490 L 450,280 Z" fill="#8D6E63" />
       <polygon points="380,410 520,410 510,440 390,440" fill="#6D4C41" />
+
+      <!-- 出てきた玉を描画するグループ -->
       <g id="ball-container"></g>
+
+      <!-- 軸受け -->
       <circle cx="450" cy="280" r="30" fill="#CFD8DC" stroke="#90A4AE" stroke-width="4" />
       <circle cx="450" cy="280" r="15" fill="#78909C" />
+
+      <!-- ================= 回転するハンドル ================= -->
       <g id="handle-group" transform="translate(450,280)">
+        <!-- アーム -->
         <rect x="-10" y="-10" width="130" height="20" rx="10" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3" />
+        <!-- 持ち手（木製） -->
         <rect x="100" y="-20" width="30" height="40" rx="15" fill="#5D4037" stroke="#3E2723" stroke-width="2" />
+        <!-- 中心のピン -->
         <circle cx="0" cy="0" r="8" fill="#546E7A" />
       </g>
+
+      <!-- インタラクション用の透明なヒットエリア（ドラッグ判定用） -->
       <circle cx="450" cy="280" r="220" fill="transparent" id="hit-area" class="hit-area" />
     </svg>
   </div>
 
-  <!-- オートスピンボタン -->
   <button id="spin-btn" class="mt-8 relative group z-10">
     <div
       class="absolute inset-0 bg-[#ffca28] rounded-lg translate-y-2 group-hover:translate-y-1 group-active:translate-y-0 transition-transform">
@@ -564,564 +592,6 @@
     document.getElementById('close-res-btn').addEventListener('click', () => {
       reservationSection.style.display = 'none';
       closePopups();
-    });
-  </script>
-</body>
-
-</html>
-
-
-
-
-    <!-- SVG ガラポン -->
-    <svg viewBox="0 0 800 600" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <!-- ドラムのグラデーション -->
-        <radialGradient id="drumGrad" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stop-color="#FF5252" />
-          <stop offset="100%" stop-color="#B71C1C" />
-        </radialGradient>
-
-        <!-- 玉のグラデーション -->
-        <radialGradient id="ballGrad-white" cx="30%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#FFFFFF" />
-          <stop offset="100%" stop-color="#E0E0E0" />
-        </radialGradient>
-        <radialGradient id="ballGrad-red" cx="30%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="#EF5350" />
-          <stop offset="100%" stop-color="#C62828" />
-        </radialGradient>
-      </defs>
-
-      <!-- 土台 -->
-      <rect x="150" y="480" width="500" height="40" rx="10" fill="#795548" />
-      <rect x="150" y="520" width="500" height="10" rx="5" fill="#4E342E" />
-
-      <!-- 樋 (玉が転がる傾斜) -->
-      <polygon points="450,420 450,450 200,480 200,450" fill="#90A4AE" />
-      <polygon points="450,440 450,455 200,485 200,470" fill="#78909C" />
-
-      <!-- 受け皿 -->
-      <rect x="180" y="450" width="100" height="40" rx="10" fill="#CFD8DC" />
-      <rect x="190" y="460" width="80" height="20" rx="5" fill="#B0BEC5" />
-
-      <!-- 奥のスタンド -->
-      <path d="M 430,280 L 370,480 L 410,480 L 450,280 Z" fill="#5D4037" />
-      <path d="M 470,280 L 530,480 L 490,480 L 450,280 Z" fill="#5D4037" />
-
-      <!-- ================= 回転するドラム ================= -->
-      <g id="drum-group" transform="translate(450,280)">
-        <!-- 八角形ボディ -->
-        <polygon
-          points="166.3,68.9 68.9,166.3 -68.9,166.3 -166.3,68.9 -166.3,-68.9 -68.9,-166.3 68.9,-166.3 166.3,-68.9"
-          fill="url(#drumGrad)" stroke="#FFCA28" stroke-width="12" stroke-linejoin="round" />
-
-        <!-- 金色の補強線 -->
-        <line x1="0" y1="0" x2="166.3" y2="68.9" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="68.9" y2="166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="-68.9" y2="166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="-166.3" y2="68.9" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="-166.3" y2="-68.9" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="-68.9" y2="-166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="68.9" y2="-166.3" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-        <line x1="0" y1="0" x2="166.3" y2="-68.9" stroke="#FFCA28" stroke-width="6" stroke-linecap="round" />
-
-        <!-- 玉の出口穴 -->
-        <circle cx="-130" cy="54" r="16" fill="#212121" />
-        <circle cx="-130" cy="54" r="16" fill="none" stroke="#FFCA28" stroke-width="4" />
-      </g>
-
-      <!-- 手前のスタンド -->
-      <path d="M 420,280 L 340,490 L 390,490 L 450,280 Z" fill="#8D6E63" />
-      <path d="M 480,280 L 560,490 L 510,490 L 450,280 Z" fill="#8D6E63" />
-      <polygon points="380,410 520,410 510,440 390,440" fill="#6D4C41" />
-
-      <!-- 出てきた玉を描画するグループ -->
-      <g id="ball-container"></g>
-
-      <!-- 軸受け -->
-      <circle cx="450" cy="280" r="30" fill="#CFD8DC" stroke="#90A4AE" stroke-width="4" />
-      <circle cx="450" cy="280" r="15" fill="#78909C" />
-
-      <!-- ================= 回転するハンドル ================= -->
-      <g id="handle-group" transform="translate(450,280)">
-        <!-- アーム -->
-        <rect x="-10" y="-10" width="130" height="20" rx="10" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3" />
-        <!-- 持ち手（木製） -->
-        <rect x="100" y="-20" width="30" height="40" rx="15" fill="#5D4037" stroke="#3E2723" stroke-width="2" />
-        <!-- 中心のピン -->
-        <circle cx="0" cy="0" r="8" fill="#546E7A" />
-      </g>
-
-      <!-- インタラクション用の透明なヒットエリア（ドラッグ判定用） -->
-      <circle cx="450" cy="280" r="220" fill="transparent" id="hit-area" class="hit-area" />
-    </svg>
-  </div>
-
-  <!-- オートスピンボタン (和風デザイン) -->
-  <button id="spin-btn" class="mt-8 relative group z-10">
-    <div
-      class="absolute inset-0 bg-[#ffca28] rounded-lg translate-y-2 group-hover:translate-y-1 group-active:translate-y-0 transition-transform">
-    </div>
-    <div
-      class="relative bg-[#b71c1c] text-white px-10 py-4 text-2xl md:text-3xl rounded-lg font-bold border-2 border-[#ffca28] tracking-widest flex items-center justify-center group-hover:-translate-y-1 group-active:translate-y-0 transition-transform">
-      <span style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">自動で回す</span>
-    </div>
-  </button>
-
-
-  <!-- 結果表示ポップアップ（全画面オーバーレイ） -->
-  <div id="result-popup"
-    class="fixed inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 scale-50 z-[50] bg-black/60 backdrop-blur-sm p-4">
-    <div
-      class="bg-[#fffdfa] p-4 md:p-8 rounded-lg shadow-2xl flex flex-col items-center justify-center japanese-border max-w-[95%] md:max-w-md relative overflow-y-auto overflow-x-hidden max-h-[90vh]">
-      <!-- 和柄の透かし背景 -->
-      <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style="background-image: radial-gradient(#b71c1c 2px, transparent 2px); background-size: 20px 20px;"></div>
-
-      <h2 id="result-text" class="text-4xl md:text-6xl font-extrabold mb-4 tracking-widest z-10 flex-shrink-0"
-        style="text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;">当たり！</h2>
-
-      <div
-        class="z-10 flex-shrink-0 bg-gray-200 border-4 border-[#e0e0e0] rounded-sm overflow-hidden shadow-inner flex items-center justify-center"
-        style="width: 200px; height: 200px; min-height: 200px; min-width: 200px;">
-        <img id="result-image" src="" alt="景品画像" style="width: 200px; height: 200px; object-fit: cover; display: none;">
-        <div id="result-no-image" class="text-gray-400 font-bold" style="display: none;">画像なし</div>
-      </div>
-
-      <div class="mt-4 bg-[#b71c1c] text-white px-4 py-2 rounded-sm shadow-md z-10 border border-[#ffca28] flex-shrink-0">
-        <p id="result-prize-name" class="text-xl md:text-2xl font-bold text-center tracking-wide">...</p>
-      </div>
-
-      <!-- アクションボタンエリア -->
-      <div class="mt-8 flex flex-col items-center gap-4 w-full z-10">
-        <!-- 来店予約ボタン（初期は隠す） -->
-        <button id="reserve-popup-btn"
-          class="hidden w-full px-8 py-4 bg-[#b71c1c] text-white font-black rounded-full shadow-lg border-2 border-[#ffca28] hover:translate-y-1 hover:shadow-md active:bg-[#8e1515] transition-all tracking-widest text-xl text-center">
-          この特典で来店予約する ➡
-        </button>
-        
-        <button id="close-popup-btn"
-          class="px-6 py-2 bg-gray-100 text-gray-600 font-bold rounded-full shadow border-b-2 border-gray-300 hover:translate-y-0.5 active:bg-gray-200 transition-all text-sm">
-          閉じる
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // --- 音声関連のセットアップ ---
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new AudioContext();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    // 木製のカラカラ音（回している時のラチェット音）
-    function playClickSound() {
-      if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.03);
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.value = 1500;
-
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.05);
-    }
-
-    // 和太鼓（ドドンッ）のような音
-    function playTaiko(time, isStrong = false) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(130, time);
-      osc.frequency.exponentialRampToValueAtTime(40, time + 0.4);
-      gain.gain.setValueAtTime(isStrong ? 1.5 : 1.0, time);
-      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(time);
-      osc.stop(time + 0.5);
-
-      // アタック音（バチの当たる木の音）
-      const snap = audioCtx.createOscillator();
-      const snapGain = audioCtx.createGain();
-      snap.type = 'triangle';
-      snap.frequency.setValueAtTime(400, time);
-      snap.frequency.exponentialRampToValueAtTime(100, time + 0.05);
-      snapGain.gain.setValueAtTime(isStrong ? 0.6 : 0.3, time);
-      snapGain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
-      snap.connect(snapGain);
-      snapGain.connect(audioCtx.destination);
-      snap.start(time);
-      snap.stop(time + 0.1);
-    }
-
-    // 当たり鉦（カーン！）のような音
-    function playKane(time) {
-      [800, 1200, 1800].forEach((freq, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq + (Math.random() * 20 - 10), time);
-        gain.gain.setValueAtTime(0.15 / (i + 1), time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 1.2);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(time);
-        osc.stop(time + 1.2);
-      });
-    }
-
-    // 和風の抽選結果サウンド（当たり/ハズレ）
-    function playJapaneseResultSound(rank) {
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
-
-      if (rank === 0) {
-        // 大当たり！: ド・ドン・ドン！＋カーン！カーン！
-        playTaiko(now);
-        playTaiko(now + 0.2);
-        playTaiko(now + 0.4, true);
-        playKane(now + 0.4);
-        playKane(now + 0.8);
-      } else {
-        // ハズレ: ドン（単発）
-        playTaiko(now);
-      }
-    }
-
-    // --- 抽選ロジック ---
-    const balls = [
-      { fill: 'url(#ballGrad-white)', stroke: '#BDBDBD', prob: 0.80, text: '残念…', textColor: '#999999', rank: 1, prizeName: 'またのお越しをお待ちしております', image: 'images/lose.jpg' },
-      { fill: 'url(#ballGrad-red)', stroke: '#D32F2F', prob: 0.20, text: '🎊 大当たり！', textColor: '#D32F2F', rank: 0, prizeName: '1万円割引クーポン（3万円以上のお買い上げで使えます）', image: 'images/win.jpg' }
-    ];
-
-    function getRandomBall() {
-      const rand = Math.random();
-      let cumulative = 0;
-      for (let b of balls) {
-        cumulative += b.prob;
-        if (rand <= cumulative) return b;
-      }
-      return balls[0];
-    }
-
-    // --- アニメーションとインタラクション ---
-    const hitArea = document.getElementById('hit-area');
-    const drum = document.getElementById('drum-group');
-    const handle = document.getElementById('handle-group');
-    const ballContainer = document.getElementById('ball-container');
-    const popup = document.getElementById('result-popup');
-    const resultText = document.getElementById('result-text');
-    const resultImage = document.getElementById('result-image');
-    const resultNoImage = document.getElementById('result-no-image');
-    const resultPrizeName = document.getElementById('result-prize-name');
-    const reservePopupBtn = document.getElementById('reserve-popup-btn'); // 予約ボタン追加
-
-    let isDragging = false;
-    let currentAngle = 0;
-    let startAngle = 0;
-    let lastClickAngle = 0;
-
-    // スピンロック（抽選中・状態表示中は回せない）
-    let isSpinLocked = false;
-
-    // 玉が落ちる基準のカウント（穴が真下に来る角度: 292.5度 + 360*n）
-    let lastSpinCount = -1;
-
-    function getMouseAngle(e) {
-      const rect = hitArea.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return Math.atan2(clientY - cy, clientX - cx);
-    }
-
-    function onStart(e) {
-      if (isSpinLocked) return; // すでに玉が出てロック中の場合は無効
-      e.preventDefault();
-      initAudio();
-      isDragging = true;
-      startAngle = getMouseAngle(e);
-      // 回転開始時のカウントをリセット（途中から逆回転で不正に玉を出さないため）
-      lastSpinCount = Math.floor((currentAngle - 292.5) / 360);
-    }
-
-    function onMove(e) {
-      if (!isDragging || isSpinLocked) return; // ドラッグ中でない、または玉が出てロックされている場合は回転させない
-      e.preventDefault();
-      const angle = getMouseAngle(e);
-      let delta = angle - startAngle;
-
-      // -PI と PI の境界をまたぐ時の補正
-      if (delta > Math.PI) delta -= Math.PI * 2;
-      if (delta < -Math.PI) delta += Math.PI * 2;
-
-      currentAngle += delta * (180 / Math.PI);
-      startAngle = angle;
-
-      updateRotation();
-    }
-
-    function onEnd() {
-      isDragging = false;
-    }
-
-    // イベントリスナー登録
-    hitArea.addEventListener('mousedown', onStart);
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onEnd);
-    hitArea.addEventListener('touchstart', onStart, { passive: false });
-    window.addEventListener('touchmove', onMove, { passive: false });
-    window.addEventListener('touchend', onEnd);
-
-    function updateRotation() {
-      drum.setAttribute('transform', `translate(450,280) rotate(${currentAngle})`);
-      handle.setAttribute('transform', `translate(450,280) rotate(${currentAngle})`);
-
-      // カラカラ音 (約30度ごと)
-      if (Math.abs(currentAngle - lastClickAngle) > 30) {
-        playClickSound();
-        lastClickAngle = currentAngle;
-      }
-
-      // 玉の排出判定
-      let currentSpinCount = Math.floor((currentAngle - 292.5) / 360);
-      if (currentSpinCount > lastSpinCount) {
-        dropBall();
-        lastSpinCount = currentSpinCount;
-      } else if (currentSpinCount < lastSpinCount) {
-        // 逆回転時はカウントだけ戻す
-        lastSpinCount = currentSpinCount;
-      }
-    }
-
-    function dropBall() {
-      const ballData = getRandomBall();
-
-      // SVG上に玉を生成
-      const ball = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      ball.setAttribute('r', '12');
-      ball.setAttribute('fill', ballData.fill);
-      ball.setAttribute('stroke', ballData.stroke);
-      ball.setAttribute('stroke-width', '2');
-      ballContainer.appendChild(ball);
-
-      // 玉が出た瞬間に UI（ガラポンのドラッグと自動ボタン）を完全にロックする
-      isSpinLocked = true;
-      isDragging = false; // ドラッグ状態も強制解除し、これ以上回らなくする
-      document.getElementById('spin-btn').classList.add('opacity-50', 'pointer-events-none');
-      document.getElementById('spin-btn').classList.remove('group');
-
-      // アニメーションの軌道設定
-      const startX = 450;
-      const startY = 420;
-      const dropY = 438; // 樋への着地点
-      // 受け皿内のランダムな位置に転がる
-      const endX = 200 + Math.random() * 40;
-      const endY = 460 + (Math.random() - 0.5) * 8;
-
-      let startTime = null;
-      const duration = 1200; // 1.2秒かけて転がる
-
-      function animateBall(time) {
-        if (!startTime) startTime = time;
-        const progress = Math.min((time - startTime) / duration, 1);
-
-        let x, y;
-        if (progress < 0.2) {
-          // 真下にポロッと落ちる
-          const p = progress / 0.2;
-          x = startX;
-          y = startY + (dropY - startY) * p;
-        } else {
-          // 樋を転がる (イージングアウト)
-          const p = (progress - 0.2) / 0.8;
-          const easeP = 1 - Math.pow(1 - p, 3);
-          x = startX + (endX - startX) * easeP;
-          y = dropY + (endY - dropY) * easeP;
-        }
-
-        ball.setAttribute('cx', x);
-        ball.setAttribute('cy', y);
-
-        if (progress < 1) {
-          requestAnimationFrame(animateBall);
-        } else {
-          // アニメーション完了（玉が完全に受け皿に落ちた）後、溜めを作ってから結果発表
-          setTimeout(() => {
-            playJapaneseResultSound(ballData.rank);
-            showResultToast(ballData);
-          }, 1500); // 1.5秒（玉が転がり終わってから）待ち、合計すると排出から約2.7秒後
-        }
-      }
-      requestAnimationFrame(animateBall);
-    }
-
-    function showResultToast(ballData) {
-      // 1. UIの更新
-      resultText.textContent = ballData.text;
-      resultText.style.color = ballData.textColor;
-
-      // ポップアップの枠色を景品のランクに合わせて変更 (金/赤/黄/青/銀など)
-      const popupCard = popup.querySelector('.japanese-border');
-      popupCard.style.borderColor = ballData.textColor;
-      // 枠の影(金)は固定で豪華に
-      popupCard.style.boxShadow = `0 0 0 4px #ffca28, 0 10px 25px rgba(0,0,0,0.3)`;
-
-      resultPrizeName.textContent = ballData.prizeName;
-      // 景品名の背景色をボールの色に合わせる（テキストは白固定）
-      const prizeNameContainer = resultPrizeName.parentElement;
-      prizeNameContainer.style.backgroundColor = ballData.textColor;
-
-      if (ballData.image) {
-        resultImage.onload = function () {
-          resultImage.style.display = 'block';
-          resultNoImage.style.display = 'none';
-        };
-        resultImage.onerror = function () {
-          resultImage.style.display = 'none';
-          resultNoImage.style.display = 'block';
-        };
-        // 読み込み開始前にNo Imageを隠し、画像枠を確保
-        resultNoImage.style.display = 'none';
-        resultImage.src = ballData.image;
-      } else {
-        resultImage.style.display = 'none';
-        resultNoImage.style.display = 'block';
-      }
-
-      // 2. 来店予約ボタンの表示制御とデータ保存
-      if (ballData.rank === 0) { // 大当たりの場合のみ予約を促す
-        reservePopupBtn.classList.remove('hidden');
-        reservePopupBtn.onclick = () => {
-          // sessionStorageにセット
-          sessionStorage.setItem('prizeData', JSON.stringify({
-            prizeName: ballData.prizeName,
-            rank: ballData.rank
-          }));
-          window.location.href = 'reservation.html';
-        };
-      } else {
-        reservePopupBtn.classList.add('hidden');
-      }
-
-      // 3. ポップアップ表示アニメーション
-      popup.classList.remove('opacity-0', 'scale-50', 'pointer-events-none');
-      popup.classList.add('opacity-100', 'scale-100');
-
-      // 4. 紙吹雪エフェクト (大当たりのみ)
-      if (ballData.rank === 0) {
-        // 紙吹雪をループさせるIDを保存（閉じた時に止める用）
-        window.confettiInterval = startConfetti();
-      }
-    }
-
-    // 紙吹雪を出し続ける関数
-    function startConfetti() {
-      const duration = 15 * 1000; // 長めに設定しておく
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-      function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-      return setInterval(function () {
-        const timeLeft = animationEnd - Date.now();
-        if (timeLeft <= 0) { return clearInterval(window.confettiInterval); }
-        const particleCount = 50 * (timeLeft / duration);
-        confetti({
-          ...defaults, particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-        });
-        confetti({
-          ...defaults, particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-        });
-      }, 250);
-    }
-
-    // 閉じるボタンの処理
-    document.getElementById('close-popup-btn').addEventListener('click', () => {
-      // ポップアップを閉じる
-      popup.classList.remove('opacity-100', 'scale-100');
-      popup.classList.add('opacity-0', 'scale-50', 'pointer-events-none');
-
-      // 紙吹雪を即座に停止
-      if (window.confettiInterval) {
-        clearInterval(window.confettiInterval);
-        window.confettiInterval = null;
-      }
-
-      // ロック解除
-      isSpinLocked = false;
-      const spinBtn = document.getElementById('spin-btn');
-      spinBtn.classList.remove('opacity-50', 'pointer-events-none');
-      spinBtn.classList.add('group');
-
-      // 次の人が回す時のために玉を削除する
-      ballContainer.innerHTML = '';
-
-      // 自動回転のフラグもリセットする（再度ボタンが押せるようにする）
-      isAutoSpinning = false;
-    });
-
-    // --- 自動回転ボタン ---
-    let isAutoSpinning = false;
-    document.getElementById('spin-btn').addEventListener('click', () => {
-      if (isAutoSpinning || isSpinLocked) return; // ロック中・回転中は無効
-      initAudio();
-      isAutoSpinning = true;
-
-      // 自動回転中もUIをロック
-      isSpinLocked = true;
-      const spinBtn = document.getElementById('spin-btn');
-      spinBtn.classList.add('opacity-50', 'pointer-events-none');
-      spinBtn.classList.remove('group');
-
-      const targetAngle = currentAngle + 360;
-      const startAngleAnim = currentAngle;
-      let startTime = null;
-      const duration = 1500;
-
-      // 回転開始時のカウントをリセット
-      lastSpinCount = Math.floor((currentAngle - 292.5) / 360);
-
-      function autoSpin(time) {
-        if (!startTime) startTime = time;
-        const progress = Math.min((time - startTime) / duration, 1);
-
-        // easeInOutQuad
-        const easeP = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-
-        currentAngle = startAngleAnim + 360 * easeP;
-        updateRotation();
-
-        if (progress < 1) {
-          requestAnimationFrame(autoSpin);
-        } else {
-          isAutoSpinning = false;
-        }
-      }
-      requestAnimationFrame(autoSpin);
     });
   </script>
 </body>
