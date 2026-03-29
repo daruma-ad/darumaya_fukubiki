@@ -464,9 +464,20 @@
       resultPrizeName.parentElement.style.backgroundColor = ballData.textColor;
 
       if (ballData.image) {
-        resultImage.onload = () => { resultImage.style.display = 'block'; resultNoImage.style.display = 'none'; };
-        resultImage.onerror = () => { resultImage.style.display = 'none'; resultNoImage.style.display = 'block'; };
-        resultNoImage.style.display = 'none'; resultImage.src = ballData.image;
+        // キャッシュによる「はずれ」画像の残存を防ぐため、一度非表示にしてからソースを更新
+        resultImage.style.display = 'none';
+        resultNoImage.style.display = 'none';
+        
+        resultImage.onload = () => { 
+          resultImage.style.display = 'block'; 
+          resultNoImage.style.display = 'none'; 
+        };
+        resultImage.onerror = () => { 
+          resultImage.style.display = 'none'; 
+          resultNoImage.style.display = 'block'; 
+        };
+        // キャッシュ回避用のタイムスタンプを付与
+        resultImage.src = ballData.image + '?v=' + Date.now();
       } else {
         resultImage.style.display = 'none'; resultNoImage.style.display = 'block';
       }
